@@ -32,4 +32,40 @@ test("Disallow a non-array for our usings", function() {
             this.message = x;
         });
     });
+
+    delete My;
 });
+
+test("Circular references between namespaces", function() {
+
+    namespace ("My.First.Namespace",
+        [namespace("My.Other.Namespace")],
+        function (other) {
+
+        this.getName = function() {
+            return "My.First.Namespace";
+        };
+
+        this.getOtherName = function() {
+            return other.getName();
+        };
+    });
+
+    namespace ("My.Other.Namespace",
+        [namespace("My.First.Namespace")],
+        function (first) {
+
+        this.getName = function() {
+            return "My.Other.Namespace";
+        };
+
+        this.getOtherName = function() {
+            return first.getName();
+        };
+    });
+
+    equal("My.Other.Namespace", My.First.Namespace.getOtherName());
+    equal("My.First.Namespace", My.Other.Namespace.getOtherName());
+
+    delete My;
+})
