@@ -3,15 +3,18 @@
 /**
  * Declares a namespace in JavaScript.
  *
- * This function can be called in one of two ways:
- *
- * namespace(ns, obj)
- *  Declares a namespace, by ensuring that a global variable called ns exists,
- *  and appending all the properties of obj to it.
- *
- * namespace(ns, [usings], fn)
- *  Declares a namespace, by ensuring that a global variable called ns exists,
- *  and calls fn passing it the arguments in usings.
+ * @param {String} ns
+ *  The name of the namespace to declare.
+ * @param {Array} usings
+ *  An array of objects (e.g. other namespaces) for which we want to create
+ *  aliases in our namespace declaration. This parameter is optional.
+ * @param {function(aliases...)} fn
+ *  A function which is called to set up the namespace. It will receive the
+ *  namespace object as its value for `this`, and the elements of the `usings`
+ *  array as its arguments. To add new functions, classes etc to the namespace,
+ *  assign them as properties of `this`.
+ * @returns {Object}
+ *  The namespace object.
  */
 
 function namespace(ns) {
