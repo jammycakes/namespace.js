@@ -5,6 +5,18 @@ This is a little function that gives you a nice, easy syntax for declaring and
 consuming namespaces in JavaScript. It doesn't do anything other than handling
 namespaces: it doesn't attempt to load in other scripts or modules, for example.
 
+It follows a few design criteria that I had:
+
+  1. I wanted to have a single IIFE-style closure for each file. This is so that
+     I can have a single `"use strict";` statement in each file, without it
+     interfering with other files that don't use strict mode when they are
+     concatenated and minified.
+  2. I wanted to be able to pass other namespaces and objects into the top level
+     closure as namespace aliases, so that if another rogue script sneaks in a
+     `jQuery.noConflict()` statement, the `$` identifier can still be made
+     available regardless. Also, so that I can declare shortcuts to other
+     namespaces elsewhere and save on typing.
+
 Usage
 -----
 
