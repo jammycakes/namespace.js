@@ -33,6 +33,8 @@ test("Disallow a non-array for our usings", function() {
         });
     });
 
+    ok(typeof My === 'undefined', 'Should not create a namespace when call fails');
+
     delete My;
 });
 

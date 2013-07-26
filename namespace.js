@@ -17,8 +17,16 @@
  *  The namespace object.
  */
 
-function namespace(ns) {
+function namespace(ns, usings, fn) {
     "use strict";
+
+    if (typeof fn === 'undefined') {
+        fn = usings;
+        usings = [];
+    }
+    if (usings.constructor !== Array) {
+        throw "Usings must be an array.";
+    }
 
     var path = ns.split('.');
     var target = window;
@@ -32,28 +40,13 @@ function namespace(ns) {
         }
     }
 
-    var args, obj;
-
-    switch (arguments.length) {
-        case 1:
-            return target;
-        case 2:
-            args = [];
-            obj = arguments[1];
-            break;
-        default:
-            args = arguments[1];
-            obj = arguments[2];
-            break;
-    }
-
-    if (typeof obj === "function") {
-        obj = obj.apply(target, args);
+    if (typeof fn === "function") {
+        fn.apply(target, usings);
     }
     else {
-        for (var key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                target[key] = obj[key];
+        for (var key in fn) {
+            if (fn.hasOwnProperty(key)) {
+                target[key] = fn[key];
             }
         }
     }
