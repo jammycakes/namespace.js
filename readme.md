@@ -22,7 +22,10 @@ Usage
 
 Using namespace.js is quite simple. A namespace declaration looks like this:
 
-    namespace("My.Namespace", [jQuery, Backbone], function($, bb) {
+    namespace("My.Namespace")
+    .using(jQuery)
+    .using(Backbone)
+    .define(function($, bb) {
         "use strict";
 
         this.showMessage = function(msg) {
@@ -30,14 +33,14 @@ Using namespace.js is quite simple. A namespace declaration looks like this:
         };
     });
 
-So...what's going on here then? The `namespace()` method takes three arguments:
+So...what's going on here then?
 
-  * The first argument is the name of your namespace.
-  * The second argument is optional. It will be an array of namespace objects
-    that this module will be using.
-  * The third argument is your declaring function. This function receives your
-    namespace itself in its `this` object, and the items in your usings as its
-    own arguments.
+  * The argument to the `namespace` function is the name of your namespace.
+  * The `using` method calls are optional and can be chained. They will define
+    objects that the module is using.
+  * The `define` method call is your declaring function This function receives
+    your namespace itself in its `this` object, and the items in your usings as
+    its own arguments.
 
 Passing arguments to your namespace declaration in this way allows you to
 declare aliases for other namespaces or objects. For instance, in the example
@@ -47,20 +50,21 @@ be declared as an alias for the `Backbone` namespace of backbone.js.
 You can spread a namespace definition over several files if you like: the
 members of each definition will be merged together.
 
-Calling the `namespace` function with only the namespace name will return the
-namespace object. This is useful if your namespaces need to have circular
-references to each other:
+If you want to pass other namespace objects to your module definition, you can
+use the `.using.namespace(...)` approach. This is useful if you need to have
+circular references between your namespaces, or if the order of definition of
+your namespaces is nondeterministic (e.g. in bundling/minification):
 
-    namespace ("My.First.Namespace",
-        [jQuery, namespace("My.Other.Namespace")],
-        function ($, other) {
-
+    namespace("My.First.Namespace")
+    .using(jQuery)
+    .using.namespace("My.Other.Namespace")
+    .define(function($, other) {
         /* whatever */
     });
 
-    namespace ("My.Other.Namespace",
-        [jQuery, namespace("My.First.Namespace")],
-        function ($, first) {
-
+    namespace ("My.Other.Namespace")
+    .using(jQuery)
+    .using.namespace("My.First.Namespace")
+    .define(function($, first) {
         /* whatever */
     });

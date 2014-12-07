@@ -1,8 +1,8 @@
 test("Can declare namespace without usings", function() {
-
-    var ns = namespace("My.Namespace.One", function() {
-        this.message = 'Hello world';
-    });
+    var ns = namespace("My.Namespace.One")
+        .define(function() {
+            this.message = 'Hello world';
+        });
 
     equal('Hello world', My.Namespace.One.message);
     delete My;
@@ -11,38 +11,27 @@ test("Can declare namespace without usings", function() {
 test("Can declare namespace with usings", function() {
     var msg = "Hello world";
 
-    var ns = namespace("My.Namespace.Two", [msg], function(m) {
-        this.message = m;
-    });
+    var ns = namespace("My.Namespace.Two")
+        .using(msg)
+        .define(function(m) {
+            this.message = m;
+        });
 
     equal(msg, My.Namespace.Two.message);
     delete My;
 });
 
 test("Can declare empty namespace", function() {
-    var ns = namespace("My.Namespace.Three");
+    var ns = namespace("My.Namespace.Three").define();
     strictEqual("object", typeof My.Namespace.Three);
-    delete My;
-});
-
-test("Disallow a non-array for our usings", function() {
-
-    throws(function() {
-        var ns = namespace("My.Namespace.Four", "Hello world", function(x) {
-            this.message = x;
-        });
-    });
-
-    ok(typeof My === 'undefined', 'Should not create a namespace when call fails');
-
     delete My;
 });
 
 test("Circular references between namespaces", function() {
 
-    namespace ("My.First.Namespace",
-        [namespace("My.Other.Namespace")],
-        function (other) {
+    namespace ("My.First.Namespace")
+        .using.namespace("My.Other.Namespace")
+        .define(function (other) {
 
         this.getName = function() {
             return "My.First.Namespace";
@@ -53,9 +42,9 @@ test("Circular references between namespaces", function() {
         };
     });
 
-    namespace ("My.Other.Namespace",
-        [namespace("My.First.Namespace")],
-        function (first) {
+    namespace ("My.Other.Namespace")
+        .using.namespace("My.First.Namespace")
+        .define(function (first) {
 
         this.getName = function() {
             return "My.Other.Namespace";
@@ -70,4 +59,4 @@ test("Circular references between namespaces", function() {
     equal("My.First.Namespace", My.Other.Namespace.getOtherName());
 
     delete My;
-})
+});
