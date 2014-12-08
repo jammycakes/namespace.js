@@ -60,3 +60,23 @@ test("Circular references between namespaces", function() {
 
     delete My;
 });
+
+test("Anonymous namespace", function() {
+    var testData = '';
+
+    var nsOther = namespace("My.Other.Namespace")
+        .define(function() {
+            this.testData = 'Test';
+        });
+
+    var nsAnon = namespace().using.namespace("My.Other.Namespace")
+        .define(function(other) {
+
+            testData = other.testData;
+        });
+
+    equal("Test", testData);
+
+    delete My;
+
+});

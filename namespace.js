@@ -21,6 +21,7 @@ function namespace(ns) {
         var self = this;
 
         function getNamespaceObject(namespaceToGet) {
+            if (!namespaceToGet) return {};
             var path = namespaceToGet.split('.');
             var target = container;
             for (var i = 0; i < path.length; i++) {
