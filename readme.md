@@ -68,3 +68,16 @@ your namespaces is nondeterministic (e.g. in bundling/minification):
     .define(function($, first) {
         /* whatever */
     });
+
+Anonymous namespaces
+--------------------
+
+If you just want to use the "using" functionality and aren't bothered with
+declaring members of a new namespace, you can declare an anonymous namespace:
+
+    namespace()
+    .using(jQuery)
+    .using.namespace("My.Other.Namespace")
+    .define(function($, other) {
+        /* whatever */
+    });
